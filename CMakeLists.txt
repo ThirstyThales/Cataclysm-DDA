@@ -61,8 +61,7 @@ ENDIF (${CMAKE_SYSTEM_NAME} MATCHES FreeBSD)
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES Darwin)
 	SET(_OS_DARWIN_ 1)
-	SET(LOCALIZE OFF)
-	MESSAGE(STATUS "Disable internationalization on Darwin as it is not supported")
+    ADD_DEFINITIONS(-DMACOSX)
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES Darwin)
 
 include(CheckCXXCompilerFlag)
@@ -347,7 +346,7 @@ ENDIF(LUA)
 
 # Ok. Now create build and install recipes
 IF(LOCALIZE)
-	IF(WIN32)
+	IF(WIN32 OR _OS_DARWIN_)
 		FIND_PACKAGE(Libintl)
 		IF(NOT LIBINTL_FOUND)
 		MESSAGE(FATAL_ERROR
@@ -360,7 +359,7 @@ IF(LOCALIZE)
 			"You need the iconv development library to be able to compile with Localize support.\nSee INSTALL file for details and more info\n"
 		)
 		ENDIF(NOT ICONV_FOUND)
-	ENDIF(WIN32)
+	ENDIF(WIN32 OR _OS_DARWIN_)
 	add_subdirectory(lang)
 	ADD_DEFINITIONS(-DLOCALIZE)
 ENDIF(LOCALIZE)
